@@ -1,13 +1,26 @@
 import fetchDummyPosts from "@/utility/fetchDummyPosts";
 import UpvoteButton from "./upvote-btn";
+import fetchDBPosts from "@/utility/fetchDBPosts";
+import { notFound } from "next/navigation";
 
-export default async function SelectedPost({ postID }: {
-  postID: string
+export default async function SelectedPost({ paramsID }: {
+  paramsID: number
 }) {
   
-  const data = await fetchDummyPosts(10);
-  const posts = data.posts;
-  const [filteredPost] = posts.filter((post) => post.id == postID)
+  // Pulling dummy data from third-party API
+  // const data = await fetchDummyPosts(10);
+  // const posts = data.posts;
+
+  // Pulling data from our database
+  const posts = await fetchDBPosts();
+
+  // Filter through the posts to find the matching postID to URL paramsID
+  const [filteredPost] = posts.filter((post) => post.id === paramsID)
+
+  // If post does not exist show "NotFound" component
+  if(!filteredPost) {
+    notFound();
+  }
 
   return (
       <>
